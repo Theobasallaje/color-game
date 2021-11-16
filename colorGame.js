@@ -1,57 +1,47 @@
 //array of 6 colors as strings
 var numSquares = 6;
-var colors = generateRandomColors(6);
+var colors = generateRandomColors(numSquares);
 var squares = document.querySelectorAll(".square");
 var pickedColor = pickColor();
 var colorDisplay = document.getElementById("colorDisplay");
 var messageDisplay = document.querySelector("#message");
 var h1 = document.querySelector("h1");
 var resetButton = document.querySelector("#reset");
-var easyBtn = document.querySelector("#easyBtn");
-var hardBtn = document.querySelector("#hardBtn");
+var modeButtons = document.querySelectorAll(".mode");
 
-easyBtn.addEventListener("click", function(){
-	easyBtn.classList.add("selected");	
-	hardBtn.classList.remove("selected");
-	numSquares = 3;
-	colors = generateRandomColors(3);
-	pickedColor = pickColor();
-	colorDisplay.textContent = pickedColor;
-	for(var i = 0; i < squares.length; i++){
-		if(colors[i]){
-			squares[i].style.backgroundColor = colors[i];
-		}
-		else{
-			squares[i].style.display = "none";
-		}
-	}	
-});
+for(var i = 0; i < modeButtons.length; i++){
+	modeButtons[i].addEventListener("click", function(){
+		modeButtons[0].classList.remove("selected");
+		modeButtons[1].classList.remove("selected");
+		this.classList.add("selected"); //adding the selected class to the button we just clicked on
+		this.textContent === "Easy" ? numSquares = 3 : numSquares = 6; //same as if statement under this
+		reset();
+	});
+}
 
-hardBtn.addEventListener("click", function(){
-	hardBtn.classList.add("selected");	
-	easyBtn.classList.remove("selected");
-	numSquares = 6;
-	colors = generateRandomColors(numSquares);
-	pickedColor = pickColor();
-	colorDisplay.textContent = pickedColor;
-	for(var i = 0; i < squares.length; i++){
-		squares[i].style.backgroundColor = colors[i];
-		squares[i].style.display = "block";
-		}
-});
-
-resetButton.addEventListener("click", function(){
-	//generate all new colors
+function reset(){
 	colors = generateRandomColors(numSquares);
 	//pick a new random color from array
 	pickedColor = pickColor();
 	//change colorDisplay to match picked color
 	colorDisplay.textContent = pickedColor;
+	resetButton.textContent = "New Colors"; //this wont work here because we want to be in terms of the resetButton
+	messageDisplay.textContent = "";
 	//change colors of squares 
 	for(var i = 0; i < squares.length; i++){
-		squares[i].style.backgroundColor = colors[i];
+		if(colors[i]){
+			squares[i].style.display = "block";
+			squares[i].style.backgroundColor = colors[i];
+		}
+		else{
+			squares[i].style.display = "none";
+		}
 	}
-	h1.style.backgroundColor = "#232323";
+	h1.style.backgroundColor = "steelblue";
+}
+
+resetButton.addEventListener("click", function(){
+	reset();
 });
 
 colorDisplay.textContent = pickedColor;
@@ -87,13 +77,6 @@ function changeColors(color){
 }
 
 function pickColor(){
-	//Math.random randomly picks from 0-1 (NOT includeing 1) (including decimals in between).
-	//multply by 6 to get up to 5.99999. Add 1 to get up to 6.9999
-	//use Math.Floor to get while number values 
-	//in this case we dont need to add one since Math.random does not include 1 
-	//colors.length is 6 but the highest index we want is 5
-	//So we dont need to add 1 since we can only go up to 5.9999 or ((colors.length)-1).9999
-	//Math.floor will truncate the .9999
 	var random = Math.floor(Math.random() * colors.length);
 	return colors[random];
 }
